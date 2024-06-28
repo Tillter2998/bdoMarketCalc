@@ -5,17 +5,25 @@ import (
 	"flag"
 	"fmt"
 	"html/template"
+	"strconv"
+	"strings"
 )
 
 func main() {
-	salePrice := flag.Float64("salePrice", 0, "Specify the sale price to calculate for")
+	salePrice := flag.String("salePrice", "", "Specify the sale price to calculate for")
 
 	flag.Parse()
 
-	baseAmount := *salePrice * (0.65 * (1 + 0.005))
-	valuePack := *salePrice * (0.65 * (1 + 0.3 + 0.005))
-	merchantsRing := *salePrice * (0.65 * (1 + 0.05 + 0.005))
-	vpRmr := *salePrice * (0.65 * (1 + 0.3 + 0.05 + 0.005))
+	salePriceNoComma := strings.ReplaceAll(*salePrice, ",", "")
+	saleInt, err := strconv.ParseFloat(salePriceNoComma, 64)
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	baseAmount := saleInt * (0.65 * (1 + 0.005))
+	valuePack := saleInt * (0.65 * (1 + 0.3 + 0.005))
+	merchantsRing := saleInt * (0.65 * (1 + 0.05 + 0.005))
+	vpRmr := saleInt * (0.65 * (1 + 0.3 + 0.05 + 0.005))
 
 	outputTemplate := `Collected Silver:
     Base Amount:              %v
